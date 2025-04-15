@@ -1,5 +1,7 @@
 package it.epicode.blog_api.post;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.apache.tomcat.jni.Library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +22,12 @@ public class PostService {
 
     public Post findById(Long id) {
         return postRepository.findById(id).orElse(null);
+    }
+
+    public void deleteById(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Post not found"));
+
+        postRepository.delete(post);
     }
 }
