@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -65,5 +67,15 @@ public class AutoreController {
    @GetMapping
    public Page<AutoreResponse> findAll(@ParameterObject Pageable pageable) {
         return autoreService.findAll(pageable);
+   }
+
+   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+   public AutoreResponse update(@PathVariable Long id,
+                                @RequestPart("autore") AutoreRequest autoreRequest,
+                                @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+
+        autoreRequest.setAvatar(avatar);
+
+        return autoreService.update(id, autoreRequest);
    }
 }
