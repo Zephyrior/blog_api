@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AutoreSelectResponse {
+public class AutoreResponse {
     private Long id;
     private String nomeCognome;
 }

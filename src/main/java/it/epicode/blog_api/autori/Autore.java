@@ -1,5 +1,6 @@
 package it.epicode.blog_api.autori;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import it.epicode.blog_api.post.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,7 +38,8 @@ public class Autore {
     @Column
     private String avatar = "https://ui-avatars.com/api/?name=Mario+Rossi";
 
-    @OneToMany(mappedBy = "autore", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autore")
+    @JsonIgnoreProperties("autore")
     private List<Post> post = new ArrayList<>();
 
 }
