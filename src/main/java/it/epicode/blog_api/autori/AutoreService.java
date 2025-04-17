@@ -1,6 +1,7 @@
 package it.epicode.blog_api.autori;
 
 import com.cloudinary.Cloudinary;
+import it.epicode.blog_api.cloudinary.CloudinaryService;
 import it.epicode.blog_api.common.CommonResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +25,9 @@ public class AutoreService {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Autowired
 
@@ -67,29 +71,39 @@ public class AutoreService {
         return autori.map(a -> new AutoreResponse(a.getId(), a.getNome() + " " + a.getCognome()));
     }
 
-    public AutoreResponse update(Long id, AutoreRequest autoreRequest) {
-        Autore autore = autoreRepository
-                .findById(id)
+//    public AutoreResponse update(Long id, AutoreRequest autoreRequest) {
+//        Autore autore = autoreRepository
+//                .findById(id)
+//                .orElseThrow(() -> new EntityNotFoundException("Autore not found"));
+//
+//        BeanUtils.copyProperties(autoreRequest, autore, "avatar");
+//
+//        MultipartFile avatarFile = autoreRequest.getAvatar();
+//        if (avatarFile != null && !avatarFile.isEmpty()) {
+//            try {
+//                Map uploadResult = cloudinary.uploader().upload(
+//                        avatarFile.getBytes(),
+//                        Cloudinary.asMap("folder", "autori", "public_id", "autore_" + id)
+//                );
+//                String avatarUrl = uploadResult.get("secure_url").toString();
+//                autore.setAvatar(avatarUrl);
+//            } catch (IOException e) {
+//                throw new RuntimeException("Errore durante l'upload dell'immagine", e);
+//            }
+//        }
+//
+//        autoreRepository.save(autore);
+//
+//        return new AutoreResponse(autore.getId(), autore.getNome() + " " + autore.getCognome());
+//    }
+
+    public void uploadAvatar(Long id, MultipartFile file) {
+        Autore autore = autoreRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Autore not found"));
 
-        BeanUtils.copyProperties(autoreRequest, autore, "avatar");
+        String url = cloudinaryService.upload(file);
 
-        MultipartFile avatarFile = autoreRequest.getAvatar();
-        if (avatarFile != null && !avatarFile.isEmpty()) {
-            try {
-                Map uploadResult = cloudinary.uploader().upload(
-                        avatarFile.getBytes(),
-                        Cloudinary.asMap("folder", "autori", "public_id", "autore_" + id)
-                );
-                String avatarUrl = uploadResult.get("secure_url").toString();
-                autore.setAvatar(avatarUrl);
-            } catch (IOException e) {
-                throw new RuntimeException("Errore durante l'upload dell'immagine", e);
-            }
-        }
-
+        autore.setAvatar(url);
         autoreRepository.save(autore);
-
-        return new AutoreResponse(autore.getId(), autore.getNome() + " " + autore.getCognome());
     }
 }

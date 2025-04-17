@@ -16,6 +16,6 @@ public class AutoreRequest {
     private String cognome;
     private LocalDate dataNascita;
     private String email;
-    private MultipartFile avatar;
+    private String avatar;
 
 }

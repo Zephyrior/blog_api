@@ -47,10 +47,11 @@ public class AutoreController {
    @ResponseStatus(HttpStatus.CREATED)
    public CommonResponse save(@RequestBody @Valid AutoreRequest autoreRequest)  {
         CommonResponse response = autoreService.save(autoreRequest);
+        String email = autoreRequest.getEmail();
 
        try {
            emailSenderService.sendEmail(
-                   "jackoat2001@gmail.com",
+                   email,
                    "Autore registrato",
                    "Autore " + autoreRequest.getNome() + " " + autoreRequest.getCognome() + " è stato registrato"
            );
@@ -69,13 +70,18 @@ public class AutoreController {
         return autoreService.findAll(pageable);
    }
 
-   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-   public AutoreResponse update(@PathVariable Long id,
-                                @RequestPart("autore") AutoreRequest autoreRequest,
-                                @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+//   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//   public AutoreResponse update(@PathVariable Long id,
+//                                @RequestPart("autore") AutoreRequest autoreRequest,
+//                                @RequestPart(value = "avatar", required = false) MultipartFile avatar) {
+//
+//        autoreRequest.setAvatar(avatar);
+//
+//        return autoreService.update(id, autoreRequest);
+//   }
 
-        autoreRequest.setAvatar(avatar);
-
-        return autoreService.update(id, autoreRequest);
+   @PatchMapping(path = "/avatar/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+   public void uploadAvatar(@PathVariable Long id,@RequestPart MultipartFile file) {
+       autoreService.uploadAvatar(id, file);
    }
 }
