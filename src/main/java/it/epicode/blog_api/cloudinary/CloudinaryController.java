@@ -32,7 +32,7 @@ public class CloudinaryController {
             // che può essere memorizzata in un database
             String url = result.get("secure_url").toString();
 
-        } catch (IOException e) {
+        } catch (IOException e ) {
             throw new RuntimeException(e);
         }
 
